@@ -2,6 +2,7 @@
 import React, { FormEvent } from "react";
 import { useRouter } from 'next/navigation';
 import { logIn } from "@/firebase/auth";
+import Link from 'next/link';
 
 export default function Login() {
     const [email, setEmail] = React.useState('');
@@ -20,8 +21,8 @@ export default function Login() {
     }
 
     return (
-        <div>
-            <h1 className="text-4xl">Sign in</h1>
+        <div className="flex flex-col items-center">
+            <h1>Sign in</h1>
             <form className="flex flex-col m-1 p-2 space-y-2 items-end max-w-sm" onSubmit={handleForm}>
                 <label className="space-x-4">
                     <span>Email</span>
@@ -31,8 +32,13 @@ export default function Login() {
                     <span>Password</span>
                     <input className="border rounded p-2" onChange={(e) => setPassword(e.target.value)} required type="password" />
                 </label>
-                <button type="submit">Submit</button>
+                <div className="text-right">
+                    <button type="submit">Submit</button>
+                </div>
             </form>
+            <div>
+                New? <Link href="/auth/register">Register for an account</Link>.
+            </div>
         </div>
     )
 }

@@ -3,3 +3,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+h1 {
+    @apply text-4xl border-b p-4 mb-4;
+}
+a {
+    @apply text-violet-900 hover:underline hover:text-indigo-900;
+}
+button[type='submit'] {
+    @apply p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900;
+}

@@ -1,11 +1,11 @@
 import firebaseApp from "./config";
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getAuth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getAuth, type User } from 'firebase/auth';
 
 const auth = getAuth(firebaseApp);
 
 export async function signUp(email: string, password: string) {
     try {
-        const result = await createUserWithEmailAndPassword(auth, email, password);
+        let result = await createUserWithEmailAndPassword(auth, email, password);
         return { result, error: null };
     } catch (error) {
         return { result: null, error };
