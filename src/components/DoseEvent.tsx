@@ -1,22 +1,21 @@
-import Map from "./Map"
+import { DoseInfo } from "@/types"
+import MapDisplay from "./MapDisplay"
 import StaticRating from "./StaticRating"
 
-export default function ({ time, loc, comment, rating }: { time: Date, loc: GeolocationCoordinates, comment: string, rating: number }) {
+export default function ({ info }: { info: DoseInfo }) {
+    const { time, pos, comment, rating } = info;
     return (
-        <div className="m-4 p-2">
+        <div className="m-4 p-2 flex flex-col space-y-4">
             <div>
                 Time: {time.toLocaleString()}
             </div>
             <div>
-                Location: lat {loc.latitude}, long {loc.longitude}
-            </div>
-            <div>
                 Comment: {comment}
             </div>
-            <div>
-                Rating: <StaticRating rating={rating} />
-            </div>  
-            <Map lat={loc.latitude} lng={loc.longitude} />
+            <div className="flex flex-row space-x-4 items-center">
+                <span>Rating:</span> <StaticRating rating={rating} />
+            </div>
+            <MapDisplay pos={pos} />
         </div>
     )
 }

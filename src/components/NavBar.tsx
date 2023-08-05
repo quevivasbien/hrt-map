@@ -21,7 +21,7 @@ export default function NavBar() {
     const logoutButton = <button className="text-violet-900 hover:underline hover:text-indigo-900" onClick={logout}>Logout</button>;
 
     return (
-        <div className="sticky top-0 mx-2 sm:max-w-4xl sm:mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white">
+        <div className="sticky top-0 mx-2 sm:max-w-4xl sm:mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white z-10">
             <div className="flex flex-row space-x-4">
                 <Link href="/" className="text-xl font-bold font-serif">HRT Map</Link>
                 {user ? <Link href="/create">Create post</Link> : null}

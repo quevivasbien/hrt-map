@@ -13,8 +13,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     const [loaded, setLoaded] = React.useState<boolean>(false);
 
     React.useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user || null);
+        const unsubscribe = onAuthStateChanged(auth, (u) => {
+            if (u != user) {
+                setUser(u || null);
+            }
         });
         setLoaded(true);
         return unsubscribe;
@@ -22,7 +24,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
 
     return (
         <UserContext.Provider value={user}>
-            {loaded ? children : <div>Loading authentication state...</div>}
+            {loaded ? children : <div className="text-center">Loading authentication state...</div>}
         </UserContext.Provider>
     )
 }
