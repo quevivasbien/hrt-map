@@ -37,7 +37,7 @@ interface FirebaseDoseInfo {
 }
 
 export async function addDoseEvent(dose: DoseInfo) {
-    const id = `${dose.user}_${dose.time.getUTCSeconds()}`;
+    const id = `${dose.user}_${dose.time.getTime()}`;
     // convert to expected format
     const { user, time, pos, comment, rating } = dose;
     if (user === undefined) {

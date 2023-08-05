@@ -37,6 +37,7 @@ export default function NewPost() {
                 console.log("Got error when adding new dose event to DB:", result.error);
             }
         });
+        router.push("/recent");
     }
 
     React.useEffect(() => {
@@ -49,7 +50,7 @@ export default function NewPost() {
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-4xl">Make a new entry</h1>
-            <form className="mx-1 p-2 flex flex-col space-y-8 sm:w-2/3 max-w-md" onSubmit={handleForm}>
+            <div className="mx-1 flex flex-col space-y-8 sm:w-2/3 max-w-md">
                 <div>
                     <div className="font-bold m-2">Rating</div>
                     <SelectRating setSharedRating={setRating} />
@@ -60,9 +61,9 @@ export default function NewPost() {
                 </label>
                 <MapSelect key={JSON.stringify(initialLoc)} pos={initialLoc} setPos={setLoc} />
                 <div className="text-end">
-                    <button className="p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900" type="submit">Submit</button>
+                    <button className="p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900" onClick={handleForm}>Submit</button>
                 </div>
-            </form>
+            </div>
         </div>
     )
 }

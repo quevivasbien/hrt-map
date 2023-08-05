@@ -20,7 +20,7 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
         });
         setLoaded(true);
         return unsubscribe;
-    });
+    }, [user]);
 
     return (
         <UserContext.Provider value={user}>

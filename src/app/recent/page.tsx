@@ -11,34 +11,33 @@ import { DoseInfo } from "@/types";
 const NUM_RECENT_EVENTS = 3;
 
 export default function Home() {
-  const router = useRouter();
-  const [events, setEvents] = React.useState<DocumentData | null>(null);
-  const [loaded, setLoaded] = React.useState<boolean>(false);
-  const [shouldRequest, setShouldRequest] = React.useState<boolean>(true);
-  const user = React.useContext(UserContext);
-  
-  React.useEffect(() => {
-    if (user === null) {
-      console.log("User is unauthenticated; navigating to login page...");
-      router.push("/auth/login");
-      return;
-    }
-    if (shouldRequest) {
-        getRecentEvents(user, NUM_RECENT_EVENTS).then((events) => {
-          setEvents(events);
-          setLoaded(true);
-        });
-        setShouldRequest(false);
-    }
-    console.log("called useEffect");
-  });
+    const router = useRouter();
+    const [events, setEvents] = React.useState<DocumentData | null>(null);
+    const [loaded, setLoaded] = React.useState<boolean>(false);
+    const user = React.useContext(UserContext);
 
-  return (
-    <main>
-      {loaded ? events?.map((info: DoseInfo) => {
-        return <DoseEvent key={info.time.getMilliseconds()} info={info} />;
-      })
-      : <div>Loading...</div>}
-    </main>
-  )
+    React.useEffect(() => {
+        if (user === null) {
+            console.log("User is unauthenticated; navigating to login page...");
+            router.push("/auth/login");
+            return;
+        }
+        getRecentEvents(user, NUM_RECENT_EVENTS).then((events) => {
+            setEvents(events);
+            setLoaded(true);
+        });
+        console.log("called useEffect");
+    }, [user, router]);
+
+    return (
+        <div className="flex flex-col items-center">
+            <h1>Your recent events</h1>
+            <div className="flex flex-col mx-1 w-full sm:w-3/4 space-y-12">
+                {loaded ? events?.map((info: DoseInfo) => {
+                    return <DoseEvent key={info.time.getMilliseconds()} info={info} />;
+                })
+                    : <div>Loading...</div>}
+            </div>
+        </div>
+    )
 }
