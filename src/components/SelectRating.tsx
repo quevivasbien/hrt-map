@@ -18,7 +18,7 @@ export default function SelectRating({ setSharedRating, numStars = 5 }: { setSha
     const buttons = [];
     for (let i = 0; i < numStars; i++) {
         buttons.push(
-            <StarButton size={32} color={"#5b21b6"} filled={rating >= i + 1} onClick={() => updateRating(i + 1)} />
+            <StarButton key={i} size={32} color={"#5b21b6"} filled={rating >= i + 1} onClick={() => updateRating(i + 1)} />
         );
     }
 

@@ -15,10 +15,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-slate-100">
+      <body className="sm:bg-slate-100">
         <UserContextProvider>
           <NavBar />
-          <div className="bg-white mx-4 sm:mx-auto sm:max-w-3xl my-8 p-8 drop-shadow">
+          <div className="p-8 sm:bg-white sm:mx-auto sm:max-w-3xl sm:my-4 sm:drop-shadow">
             {children}
           </div>
         </UserContextProvider>

@@ -13,6 +13,7 @@ const DEFAULT_LOC = { lat: 39.044354847871794, lng: -94.57359839762378 };
 
 export default function NewPost() {
     const user = React.useContext(UserContext);
+    const [shouldRequestLoc, setShouldRequestLoc] = React.useState<boolean>(true);
     const [initialLoc, setInitialLoc] = React.useState<LatLng>(DEFAULT_LOC);
     const [loc, setLoc] = React.useState<LatLng>(DEFAULT_LOC);
     const [comment, setComment] = React.useState<string>('');
@@ -41,16 +42,20 @@ export default function NewPost() {
     }
 
     React.useEffect(() => {
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const newLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-            setInitialLoc(newLoc);
-        });
-    });
+        if (shouldRequestLoc) {
+            setShouldRequestLoc(false);
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const newLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                setInitialLoc(newLoc);
+            });
+            console.log("requested initial loc");
+        }
+    }, [shouldRequestLoc, initialLoc]);
 
     return (
         <div className="flex flex-col items-center">
-            <h1 className="text-4xl">Make a new entry</h1>
-            <div className="mx-1 flex flex-col space-y-8 sm:w-2/3 max-w-md">
+            <h1>Make a new entry</h1>
+            <div className="mx-1 flex flex-col space-y-8 w-full sm:w-3/4 max-w-md">
                 <div>
                     <div className="font-bold m-2">Rating</div>
                     <SelectRating setSharedRating={setRating} />
