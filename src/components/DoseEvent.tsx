@@ -1,3 +1,6 @@
+import Map from "./Map"
+import StaticRating from "./StaticRating"
+
 export default function ({ time, loc, comment, rating }: { time: Date, loc: GeolocationCoordinates, comment: string, rating: number }) {
     return (
         <div className="m-4 p-2">
@@ -11,8 +14,9 @@ export default function ({ time, loc, comment, rating }: { time: Date, loc: Geol
                 Comment: {comment}
             </div>
             <div>
-                Rating: {rating}
-            </div>
+                Rating: <StaticRating rating={rating} />
+            </div>  
+            <Map lat={loc.latitude} lng={loc.longitude} />
         </div>
     )
 }

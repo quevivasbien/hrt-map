@@ -18,7 +18,7 @@ export default function NavBar() {
     };
 
     const loginLink = <Link href="/auth/login">Login</Link>;
-    const logoutButton = <button onClick={logout}>Logout</button>;
+    const logoutButton = <button className="text-violet-900 hover:underline hover:text-indigo-900" onClick={logout}>Logout</button>;
 
     return (
         <div className="sticky top-0 mx-2 sm:max-w-4xl sm:mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white">
