@@ -26,7 +26,6 @@ export default function Home() {
             setEvents(events);
             setLoaded(true);
         });
-        console.log("called useEffect");
     }, [user, router]);
 
     return (

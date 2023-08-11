@@ -15,10 +15,11 @@ export default function SelectRating({ setSharedRating, numStars = 5 }: { setSha
         setSharedRating(i);
     };
 
+    const randomKey = Math.random().toString().slice(2);  // to provide a unique key to this element
     const buttons = [];
     for (let i = 0; i < numStars; i++) {
         buttons.push(
-            <StarButton key={i} size={32} color={"#5b21b6"} filled={rating >= i + 1} onClick={() => updateRating(i + 1)} />
+            <StarButton key={`${randomKey}${i}`} size={32} color={"#5b21b6"} filled={rating >= i + 1} onClick={() => updateRating(i + 1)} />
         );
     }
 
