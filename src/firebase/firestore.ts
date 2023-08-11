@@ -1,7 +1,7 @@
 import firebaseApp from "./config";
 
-import { getFirestore, doc, getDoc, getDocs, setDoc, collection, query, where, orderBy, limit, GeoPoint, Timestamp} from 'firebase/firestore';
-import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, getDocs, setDoc, collection, query, where, orderBy, limit, startAfter, GeoPoint, Timestamp} from 'firebase/firestore';
+import type { Query, QueryDocumentSnapshot } from 'firebase/firestore';
 import type { User } from 'firebase/auth';
 import { DoseInfo, LatLng } from "@/types";
 
@@ -66,13 +66,19 @@ function parseEventDoc(doc: QueryDocumentSnapshot): DoseInfo {
     };
 }
 
-export async function getRecentEvents(user: User, numEvents: number) {
+export async function getRecentEvents(user: User, numEvents: number, previousSnapshot?: QueryDocumentSnapshot) {
     const coll = collection(db, EVENT_COLLECTION);
-    const q = query(coll, where("user", '==', user.uid), orderBy("time", "desc"), limit(numEvents));
+    let q: Query;
+    if (previousSnapshot) {
+        q = query(coll, where("user", "==", user.uid), orderBy("time", "desc"), startAfter(previousSnapshot), limit(numEvents))
+    } else {
+        q = query(coll, where("user", '==', user.uid), orderBy("time", "desc"), limit(numEvents));
+    }
     const docs = await getDocs(q);
-    const events: DocumentData[] = [];
+    const events: DoseInfo[] = [];
     docs.forEach((d) => {
         events.push(parseEventDoc(d));
     });
-    return events;
+    const lastSnapshot = docs.docs[docs.docs.length - 1];
+    return { events, lastSnapshot };
 }
