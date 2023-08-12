@@ -6,12 +6,12 @@ import Link from 'next/link';
 import { UserContext } from "@/components/UserContext";
 
 export default function Login() {
-    const user = React.useContext(UserContext);
+    const { userAuth } = React.useContext(UserContext);
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const router = useRouter();
 
-    if (user) {
+    if (userAuth) {
         // already logged in
         router.push('/');
     }

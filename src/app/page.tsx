@@ -7,10 +7,10 @@ import Link from 'next/link';
 
 export default function Home() {
   const router = useRouter();
-  const user = React.useContext(UserContext);
+  const { userAuth } = React.useContext(UserContext);
   
   React.useEffect(() => {
-    if (user !== null) {
+    if (userAuth !== null) {
       router.push("/recent");
       return;
     }

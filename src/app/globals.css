@@ -7,6 +7,10 @@
 h1 {
     @apply text-4xl border-b p-4 mb-4;
 }
+h2 {
+    @apply text-3xl border-b p-2 mb-2;
+}
+
 a {
     @apply text-violet-900 hover:underline hover:text-indigo-900;
 }

@@ -15,31 +15,34 @@ export default function Home() {
     const [events, setEvents] = React.useState<React.JSX.Element[]>([]);
     const [lastSnapshot, setLastSnapshot] = React.useState<QueryDocumentSnapshot | null>(null);
     const [loaded, setLoaded] = React.useState<boolean>(false);
-    const user = React.useContext(UserContext);
+    const { userAuth } = React.useContext(UserContext);
 
     const eventInfoToJsx = (info: DoseInfo) => {
         return <DoseEvent key={info.time.getMilliseconds()} info={info} />;
     }
 
+    if (userAuth === null) {
+        console.log("user is unauthenticated; navigating to login page...");
+        router.push("/auth/login");
+    }
+
     React.useEffect(() => {
-        if (user === null) {
-            console.log("User is unauthenticated; navigating to login page...");
-            router.push("/auth/login");
+        if (userAuth === null) {
             return;
         }
-        getRecentEvents(user, NUM_RECENT_EVENTS).then(({ events, lastSnapshot }) => {
+        getRecentEvents(userAuth.uid, NUM_RECENT_EVENTS).then(({ events, lastSnapshot }) => {
             setEvents(events.map(eventInfoToJsx));
             setLastSnapshot(lastSnapshot);
             setLoaded(true);
         });
-    }, [user, router]);
+    }, [userAuth, router]);
 
     const getMoreEvents = () => {
-        if (lastSnapshot === null || user === null) {
+        if (lastSnapshot === null || userAuth === null) {
             return;
         }
         setLoaded(false);
-        getRecentEvents(user, NUM_RECENT_EVENTS, lastSnapshot).then((res) => {
+        getRecentEvents(userAuth.uid, NUM_RECENT_EVENTS, lastSnapshot).then((res) => {
             const newEvents = res.events.map(eventInfoToJsx);
             setEvents([...events, ...newEvents]);
             setLastSnapshot(res.lastSnapshot);
@@ -48,7 +51,7 @@ export default function Home() {
     };
 
     const eventList = <div className="flex flex-col mx-1 w-full sm:w-3/4 space-y-12">
-        {loaded && events.length === 0 ? <div>You haven't created any posts yet.</div> : null}
+        {loaded && events.length === 0 ? <div>You haven&apos;t created any posts yet.</div> : null}
         {events}
         {!loaded ? <div>Loading...</div> : null}
         {loaded && lastSnapshot ? <button className="p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900 w-1/3 mx-auto" onClick={getMoreEvents}>Show more</button> : null}

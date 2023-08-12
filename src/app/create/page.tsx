@@ -12,7 +12,7 @@ import { addDoseEvent } from "@/firebase/firestore";
 const DEFAULT_LOC = { lat: 39.044354847871794, lng: -94.57359839762378 };
 
 export default function NewPost() {
-    const user = React.useContext(UserContext);
+    const { userAuth } = React.useContext(UserContext);
     const [shouldRequestLoc, setShouldRequestLoc] = React.useState<boolean>(true);
     const [loadingGeoLoc, setLoadingGeoLoc] = React.useState<boolean>(true);
     const [initialLoc, setInitialLoc] = React.useState<LatLng>(DEFAULT_LOC);
@@ -22,13 +22,13 @@ export default function NewPost() {
     const router = useRouter();
 
     const handleForm = async (event: FormEvent) => {
-        if (user === null) {
+        if (userAuth === null) {
             console.log('not logged in');
             return;
         }
         event.preventDefault();
         const doseInfo: DoseInfo = {
-            user: user.uid,
+            user: userAuth.uid,
             time: new Date(Date.now()),
             pos: { lat: loc.lat, lng: loc.lng },
             comment,

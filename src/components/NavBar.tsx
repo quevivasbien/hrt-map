@@ -6,7 +6,7 @@ import { UserContext } from './UserContext';
 import { useRouter } from 'next/navigation';
 
 export default function NavBar() {
-    const user = React.useContext(UserContext);
+    const { userAuth, userInfo } = React.useContext(UserContext);
     const router = useRouter();
 
     const logout = async () => {
@@ -19,14 +19,18 @@ export default function NavBar() {
 
     const loginLink = <Link href="/auth/login">Login</Link>;
     const logoutButton = <button className="text-violet-900 hover:underline hover:text-indigo-900" onClick={logout}>Logout</button>;
+    const userLinks = [
+        <Link key="create" href="/create">Create post</Link>,
+        // <Link key="friends" href="/friends">Friends</Link>,
+    ];
 
     const desktopVersion = <div className="hidden sm:block sticky top-0 max-w-4xl mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white z-10">
         <div className="flex flex-row space-x-4">
             <Link href="/" className="text-xl font-bold font-serif">HRT Map</Link>
-            {user ? <Link href="/create">Create post</Link> : null}
+            {userAuth ? userLinks : null}
             <div className="flex flex-grow justify-end">
-                {user ? <div className="space-x-4">
-                    <span>{user.email}</span>
+                {userAuth ? <div className="space-x-4">
+                    <span>{userInfo ? userInfo.name : userAuth.email}</span>
                     {logoutButton}
                 </div> : loginLink}
             </div>
@@ -42,8 +46,8 @@ export default function NavBar() {
     </svg>;
     const mobileMenu = <div className="relative">
         <div className="absolute right-0 flex flex-col items-end w-full border rounded p-4 bg-slate-50/90 backdrop-blur-sm space-y-2 text-lg">
-            {user ? <Link href="/create">Create post</Link> : null}
-            {user ? logoutButton : loginLink}
+            {userAuth ? userLinks : null}
+            {userAuth ? logoutButton : loginLink}
         </div>
     </div>;
 
