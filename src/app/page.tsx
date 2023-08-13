@@ -7,20 +7,22 @@ import Link from 'next/link';
 
 export default function Home() {
   const router = useRouter();
-  const { userAuth } = React.useContext(UserContext);
-  
-  React.useEffect(() => {
-    if (userAuth !== null) {
-      router.push("/recent");
-      return;
-    }
-  });
+  const { userAuth, userInfo } = React.useContext(UserContext);
+
+  if (userAuth) {
+    return (
+      <>
+        <h1>Welcome, {userInfo?.name ?? userAuth.email}</h1>
+        <div className="flex flex-col">
+          Links go here
+        </div>
+      </>
+    );
+  }
 
   return (
-    <main>
-      <div className="text-center">
-        <Link href="/auth/login">Log in</Link> to get started.
-        </div>
-    </main>
-  )
+    <div className="text-center">
+      <Link href="/auth/login">Log in</Link> to get started.
+    </div>
+  );
 }

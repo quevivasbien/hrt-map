@@ -122,6 +122,10 @@ export async function getFriendRequests(uid: string) {
     return { result: result ? result as FriendRequestInfo : EMPTY_FRIEND_REQUEST_INFO, error: null };
 }
 
+export async function setUserInfo(uid: string, info: UserInfo) {
+    return await addItem(USER_COLLECTION, info, uid);
+}
+
 export async function getUserInfo(uid: string) {
     let { result, error } = await getItem(USER_COLLECTION, uid);
     if (error) {
@@ -138,11 +142,13 @@ export async function getUserInfoBatch(uids: string[]) {
     return { result: result ? result as UserInfo[] : null, error: null };
 }
 
+// find the uid for a user with given username
+// if no user exists with that username, will return without error, but result will be null
 export async function getUserIdFromName(name: string) {
     try {
         const q = query(collection(db, USER_COLLECTION), where("name", "==", name), limit(1));
         const snapshot = await getDocs(q);
-        const id = snapshot.docs[0].id;
+        const id = snapshot.docs.length > 0 ? snapshot.docs[0].id : null;
         return { result: id, error: null };
     } catch (error) {
         return { result: null, error };

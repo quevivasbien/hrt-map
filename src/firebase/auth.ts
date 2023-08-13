@@ -1,12 +1,14 @@
 import firebaseApp from "./config";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getAuth, type User } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, getAuth, type User, updateProfile } from 'firebase/auth';
+import { setUserInfo } from "./firestore";
 
 const auth = getAuth(firebaseApp);
 
-export async function signUp(email: string, password: string) {
+export async function signUp(email: string, username: string, password: string) {
     try {
         let result = await createUserWithEmailAndPassword(auth, email, password);
-        return { result, error: null };
+        const { error } = await setUserInfo(result.user.uid, { name: username });
+        return { result, error };
     } catch (error) {
         return { result: null, error };
     }

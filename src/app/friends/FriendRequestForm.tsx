@@ -17,7 +17,7 @@ export default function FriendRequestForm({ myID }: { myID: string }) {
                 return;
             }
             if (!result) {
-                console.log("ID returned with an error but is undefined");
+                console.log("ID is undefined");
                 return;
             }
             sendFriendRequest(myID, result);
