@@ -21,7 +21,8 @@ export default function NavBar() {
     const logoutButton = <button className="text-violet-900 hover:underline hover:text-indigo-900" onClick={logout}>Logout</button>;
     const userLinks = [
         <Link key="create" href="/create">Create post</Link>,
-        // <Link key="friends" href="/friends">Friends</Link>,
+        <Link key="recent" href="/recent">Recent posts</Link>,
+        <Link key="friends" href="/friends">Friends</Link>,
     ];
 
     const desktopVersion = <div className="hidden sm:block sticky top-0 max-w-4xl mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white z-10">

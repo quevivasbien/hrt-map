@@ -24,7 +24,6 @@ export default function RequestsReceived({ myID, addFriend }: { myID: string | n
                 setErrorMessage("Error getting user information for friend requests");
                 return;
             }
-            console.log("Result:", result);
             const names: Record<string, string> = {};
             for (let i = 0; i < requesters.length; i++) {
                 names[requesters[i]] = result[i].name;
@@ -71,7 +70,7 @@ export default function RequestsReceived({ myID, addFriend }: { myID: string | n
             if (accept) {
                 addFriend(requester);
             }
-            const newFriendRequests = friendRequests ?? EMPTY_FRIEND_REQUEST_INFO;
+            const newFriendRequests = friendRequests ? {...friendRequests} : EMPTY_FRIEND_REQUEST_INFO;
             newFriendRequests.requesters = newFriendRequests.requesters.filter((f) => f !== requester);
             setFriendRequests(newFriendRequests);
         });
@@ -95,15 +94,15 @@ export default function RequestsReceived({ myID, addFriend }: { myID: string | n
 
     const requestList = friendRequests.requesters.map((uid) => {
         return <div key={uid} className="flex flex-row items-center justify-between">
-             <div className="flex font-bold">{names ? names[uid] : "Loading..."}</div>
-             <button className="flex p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900 mx-2" onClick={() => respond(uid, true)}>Accept</button>
-             <button className="flex p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900 mx-2" onClick={() => respond(uid, false)}>Reject</button>
+            <div className="flex font-bold">{names ? names[uid] : "Loading..."}</div>
+            <button className="flex p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900 mx-2" onClick={() => respond(uid, true)}>Accept</button>
+            <button className="flex p-2 rounded-lg drop-shadow-lg bg-violet-800 text-white hover:bg-indigo-900 mx-2" onClick={() => respond(uid, false)}>Reject</button>
         </div>;
-     });
+    });
 
-        return (
-            <div>
-                {errorMessage ? errorMessage : requestList}
-            </div>
-        );
+    return (
+        <div>
+            {errorMessage ? errorMessage : requestList}
+        </div>
+    );
 }

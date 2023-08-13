@@ -4,27 +4,40 @@ import { useRouter } from 'next/navigation';
 import { logIn } from "@/firebase/auth";
 import Link from 'next/link';
 import { UserContext } from "@/components/UserContext";
+import { FirebaseError } from "firebase/app";
 
 export default function Login() {
     const { userAuth } = React.useContext(UserContext);
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [errorMessage, setErrorMessage] = React.useState<string>();
     const router = useRouter();
-
-    if (userAuth) {
-        // already logged in
-        router.push('/');
-    }
 
     const handleForm = async (event: FormEvent) => {
         event.preventDefault();
         const { error } = await logIn(email, password);
         if (error) {
-            console.log("Got error when logging in:", error);
+            const code = (error as FirebaseError).code;
+            switch (code) {
+                case "auth/wrong-password":
+                    setErrorMessage("Incorrect password");
+                    break;
+                case "auth/user-not-found":
+                    setErrorMessage("No account found with this email");
+                    break;
+                default:
+                    console.log("Got error when logging in:", error);
+            }
             return;
         }
         // console.log("signed in; result =", result);
         router.push('/');
+    }
+
+    if (userAuth) {
+        return (
+            <div className="text-center">You are already logged in.</div>
+        );
     }
 
     return (
@@ -42,6 +55,7 @@ export default function Login() {
                 <div className="text-right">
                     <button type="submit">Submit</button>
                 </div>
+                {errorMessage ? <div className="text-red-700 text-center w-full">{errorMessage}</div> : null}
             </form>
             <div>
                 New? <Link href="/auth/register">Register for an account</Link>.

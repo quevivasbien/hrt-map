@@ -18,9 +18,9 @@ export default function RootLayout({
       <body className="sm:bg-slate-100">
         <UserContextProvider>
           <NavBar />
-          <div className="p-8 sm:bg-white sm:mx-auto sm:max-w-3xl sm:my-4 sm:drop-shadow">
+          <main className="p-8 sm:bg-white sm:mx-auto sm:max-w-3xl sm:my-4 sm:drop-shadow">
             {children}
-          </div>
+          </main>
         </UserContextProvider>
       </body>
     </html>

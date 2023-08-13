@@ -106,10 +106,21 @@ export async function getRecentEvents(uid: string, numEvents: number, previousSn
     return { events, lastSnapshot };
 }
 
+async function initFriendInfo(uid: string) {
+    await addItem(FRIEND_COLLECTION, EMPTY_FRIEND_INFO, uid);
+}
+
+async function initFriendRequestInfo(uid: string) {
+    await addItem(FRIEND_REQUEST_COLLECTION, EMPTY_FRIEND_REQUEST_INFO, uid);
+}
+
 export async function getFriendInfo(uid: string) {
     const { result, error } = await getItem(FRIEND_COLLECTION, uid);
     if (error) {
         return { result: null, error };
+    }
+    if (!result) {
+        initFriendInfo(uid);
     }
     return { result: result ? result as FriendInfo : EMPTY_FRIEND_INFO, error: null };
 }
@@ -119,7 +130,14 @@ export async function getFriendRequests(uid: string) {
     if (error) {
         return { result: null, error };
     }
+    if (!result) {
+        initFriendRequestInfo(uid);
+    }
     return { result: result ? result as FriendRequestInfo : EMPTY_FRIEND_REQUEST_INFO, error: null };
+}
+
+export async function setUserInfo(uid: string, info: UserInfo) {
+    return await addItem(USER_COLLECTION, info, uid);
 }
 
 export async function getUserInfo(uid: string) {
@@ -138,11 +156,13 @@ export async function getUserInfoBatch(uids: string[]) {
     return { result: result ? result as UserInfo[] : null, error: null };
 }
 
+// find the uid for a user with given username
+// if no user exists with that username, will return without error, but result will be null
 export async function getUserIdFromName(name: string) {
     try {
         const q = query(collection(db, USER_COLLECTION), where("name", "==", name), limit(1));
         const snapshot = await getDocs(q);
-        const id = snapshot.docs[0].id;
+        const id = snapshot.docs.length > 0 ? snapshot.docs[0].id : null;
         return { result: id, error: null };
     } catch (error) {
         return { result: null, error };
@@ -158,8 +178,21 @@ export async function sendFriendRequest(uid: string, other: string) {
         const [userDoc, otherDoc] = await Promise.all([
             getDoc(userRef), getDoc(otherRequestRef),
         ]);
-        const { requestsSent } = userDoc.data() as FriendInfo;
-        const { requesters } = otherDoc.data() as FriendRequestInfo;
+        let requestsSent: string[];
+        if (!userDoc.exists()) {
+            await initFriendInfo(uid);
+            requestsSent = [];
+        } else {
+            requestsSent = (userDoc.data() as FriendInfo).requestsSent;
+            console.log("Requests sent", requestsSent);
+        }
+        let requesters: string[];
+        if (!otherDoc.exists()) {
+            await initFriendRequestInfo(other);
+            requesters = [];
+        } else {
+            requesters = (otherDoc.data() as FriendRequestInfo).requesters;
+        }
         if (!requestsSent.includes(other)) {
             requestsSent.push(other);
             requesters.push(uid);
