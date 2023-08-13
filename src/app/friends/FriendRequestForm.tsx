@@ -20,7 +20,12 @@ export default function FriendRequestForm({ myID }: { myID: string }) {
                 console.log("ID is undefined");
                 return;
             }
-            sendFriendRequest(myID, result);
+            console.log(`Sending friend request to ${result}`);
+            sendFriendRequest(myID, result).then(({ error }) => {
+                if (error) {
+                    console.log("Error status is", error);
+                }
+            });
             setUname('');
         });
     };

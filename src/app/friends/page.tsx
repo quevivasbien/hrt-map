@@ -11,7 +11,6 @@ import RequireAuth from "@/components/RequireAuth";
 export default function FriendsPage() {
     const { userAuth } = React.useContext(UserContext);
     const [friendInfo, setFriendInfo] = React.useState<FriendInfo | null>(null);
-
     const [errorMessage, setErrorMessage] = React.useState<string>('');
 
     const syncSentFriendRequests = React.useCallback((uid: string, friendInfo: FriendInfo | null) => {
@@ -41,17 +40,15 @@ export default function FriendsPage() {
 
     React.useEffect(() => {
         if (userAuth === null) {
-            console.log("Tried to get friend info without being logged in; redirecting to login...");
+            console.log("Tried to get friend info without being logged in");
             return;
         }
         syncFriendInfo(userAuth.uid);
     }, [userAuth, syncFriendInfo]);
 
     const addFriend = (other: string) => {
-        console.log("called addFriend");
-        const newFriendInfo = friendInfo ?? EMPTY_FRIEND_INFO;
+        const newFriendInfo = friendInfo ? {...friendInfo} : EMPTY_FRIEND_INFO;
         newFriendInfo.friends.push(other);
-        console.log("New friend info:", newFriendInfo);
         setFriendInfo(newFriendInfo);
     };
 

@@ -106,10 +106,21 @@ export async function getRecentEvents(uid: string, numEvents: number, previousSn
     return { events, lastSnapshot };
 }
 
+async function initFriendInfo(uid: string) {
+    await addItem(FRIEND_COLLECTION, EMPTY_FRIEND_INFO, uid);
+}
+
+async function initFriendRequestInfo(uid: string) {
+    await addItem(FRIEND_REQUEST_COLLECTION, EMPTY_FRIEND_REQUEST_INFO, uid);
+}
+
 export async function getFriendInfo(uid: string) {
     const { result, error } = await getItem(FRIEND_COLLECTION, uid);
     if (error) {
         return { result: null, error };
+    }
+    if (!result) {
+        initFriendInfo(uid);
     }
     return { result: result ? result as FriendInfo : EMPTY_FRIEND_INFO, error: null };
 }
@@ -118,6 +129,9 @@ export async function getFriendRequests(uid: string) {
     const { result, error } = await getItem(FRIEND_REQUEST_COLLECTION, uid);
     if (error) {
         return { result: null, error };
+    }
+    if (!result) {
+        initFriendRequestInfo(uid);
     }
     return { result: result ? result as FriendRequestInfo : EMPTY_FRIEND_REQUEST_INFO, error: null };
 }
@@ -164,8 +178,21 @@ export async function sendFriendRequest(uid: string, other: string) {
         const [userDoc, otherDoc] = await Promise.all([
             getDoc(userRef), getDoc(otherRequestRef),
         ]);
-        const { requestsSent } = userDoc.data() as FriendInfo;
-        const { requesters } = otherDoc.data() as FriendRequestInfo;
+        let requestsSent: string[];
+        if (!userDoc.exists()) {
+            await initFriendInfo(uid);
+            requestsSent = [];
+        } else {
+            requestsSent = (userDoc.data() as FriendInfo).requestsSent;
+            console.log("Requests sent", requestsSent);
+        }
+        let requesters: string[];
+        if (!otherDoc.exists()) {
+            await initFriendRequestInfo(other);
+            requesters = [];
+        } else {
+            requesters = (otherDoc.data() as FriendRequestInfo).requesters;
+        }
         if (!requestsSent.includes(other)) {
             requestsSent.push(other);
             requesters.push(uid);
