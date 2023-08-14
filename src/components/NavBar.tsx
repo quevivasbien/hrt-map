@@ -80,9 +80,9 @@ export default function NavBar() {
     </div>;
 
     return (
-        <>
+        <header>
             {desktopVersion}
             {mobileVersion}
-        </>
+        </header>
     );
 }

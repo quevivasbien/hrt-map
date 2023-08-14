@@ -15,6 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json"/>
+      </head>
       <body className="sm:bg-slate-100">
         <UserContextProvider>
           <NavBar />
