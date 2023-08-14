@@ -36,7 +36,7 @@ export default function MapSelect({ pos, setPos = null }: { pos: LatLng, setPos?
                 zoom={12}
                 center={markerPos}
                 mapTypeId={google.maps.MapTypeId.ROADMAP}
-                mapContainerStyle={{ width: '100%', height: '100%' }}
+                mapContainerStyle={{ width: '100%', height: '100%', zIndex: -10 }}
                 onLoad={() => console.log('Map Component Loaded...')}
             >
                 <Marker

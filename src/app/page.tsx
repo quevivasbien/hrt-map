@@ -11,7 +11,7 @@ export default function Home() {
     return (
       <>
         <h1 className="text-center">Welcome, {userInfo?.name ?? userAuth.email}</h1>
-        <div className="flex flex-col items-center text-lg space-y-2">
+        <div className="flex flex-col items-center text-center text-lg space-y-4">
           <Link href="/create">Create a new post</Link>
           <Link href="/recent">View your recent posts</Link>
           <Link href="/friends">View your friends or manage friend requests</Link>

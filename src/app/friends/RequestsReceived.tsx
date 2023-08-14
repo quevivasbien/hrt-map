@@ -19,11 +19,6 @@ export default function RequestsReceived({ myID, addFriend }: { myID: string | n
                 setErrorMessage("Error getting user information for friend requests");
                 return;
             }
-            if (result.length < requesters.length) {
-                console.log("Number of unames found did not match number of request IDs");
-                setErrorMessage("Error getting user information for friend requests");
-                return;
-            }
             const names: Record<string, string> = {};
             for (let i = 0; i < requesters.length; i++) {
                 names[requesters[i]] = result[i].name;

@@ -13,9 +13,10 @@ function FriendPreview({ uid, info }: { uid: string, info: UserInfo}) {
 }
 
 export default function FriendsList({ friends }: { friends: string[] }) {
-    const [friendsUserInfo, setFriendsUserInfo] = useState<UserInfo[]>();
+    const [friendsUserInfo, setFriendsUserInfo] = useState<Record<string, UserInfo>>();
     const [errorMessage, setErrorMessage] = useState<string>();
 
+    // TODO: Put friends and friend info in correct order, make sure this component updates when friendInfo updates in parent
     useEffect(() => {
         if (friends.length === 0) {
             return;
@@ -25,10 +26,8 @@ export default function FriendsList({ friends }: { friends: string[] }) {
                 console.log("Got error when fetching friends' user info:", error);
             } else if (!result) {
                 console.log("Got no error, but result is missing.");
-            } else if (result.length !== friends.length) {
-                console.log("Result length does not match input length");
             }
-            if (error || !result || result.length !== friends.length) {
+            if (error || !result) {
                 setErrorMessage("Something went wrong while fetching your friends' info");
                 return;
             }
@@ -55,13 +54,13 @@ export default function FriendsList({ friends }: { friends: string[] }) {
     }
 
     const friendPreviews = [];
-    for (let i = 0; i < friends.length; i++) {
-        if (!friends[i] || !friendsUserInfo[i]) {
+    for (let friend of friends) {
+        if (!friendsUserInfo[friend]) {
             console.log("friends and friends info don't match:", { friends, friendsUserInfo });
             continue;
         }
         friendPreviews.push(
-            <FriendPreview key={friends[i]} uid={friends[i]} info={friendsUserInfo[i]} />
+            <FriendPreview key={friend} uid={friend} info={friendsUserInfo[friend]} />
         );
     }
     return (

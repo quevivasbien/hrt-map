@@ -42,8 +42,8 @@ async function getItems(collName: string, ids: string[]) {
         const q = query(coll, where("__name__", "in", ids));
         const docs = await getDocs(q);
 
-        const items: DocumentData[] = [];
-        docs.forEach((d) => items.push(d.data()));
+        const items: Record<string, DocumentData> = {};
+        docs.forEach((d) => items[d.id] = d.data());
         return { result: items, error: null };
     } catch (error) {
         return { result: null, error };
@@ -153,7 +153,7 @@ export async function getUserInfoBatch(uids: string[]) {
     if (error) {
         return { result: null, error };
     }
-    return { result: result ? result as UserInfo[] : null, error: null };
+    return { result: result ? result as Record<string, UserInfo> : null, error: null };
 }
 
 // find the uid for a user with given username

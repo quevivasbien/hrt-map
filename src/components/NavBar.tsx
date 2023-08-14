@@ -3,11 +3,24 @@ import { logOut } from '@/firebase/auth';
 import Link from 'next/link';
 import React from 'react';
 import { UserContext } from './UserContext';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+
+function SelectiveLink({ href, pathname, children }: { href: string, pathname: string, children: React.ReactNode }) {
+    if (href === pathname) {
+        return (
+            <span className="text-gray-500">{children}</span>
+        );
+    } else {
+        return (
+            <Link href={href}>{children}</Link>
+        );
+    }
+}
 
 export default function NavBar() {
     const { userAuth, userInfo } = React.useContext(UserContext);
     const router = useRouter();
+    const pathname = usePathname();
 
     const logout = async () => {
         const { error } = await logOut();
@@ -20,9 +33,9 @@ export default function NavBar() {
     const loginLink = <Link href="/auth/login">Login</Link>;
     const logoutButton = <button className="text-violet-900 hover:underline hover:text-indigo-900" onClick={logout}>Logout</button>;
     const userLinks = [
-        <Link key="create" href="/create">Create post</Link>,
-        <Link key="recent" href="/recent">Recent posts</Link>,
-        <Link key="friends" href="/friends">Friends</Link>,
+        <SelectiveLink pathname={pathname} key="create" href="/create">Create post</SelectiveLink>,
+        <SelectiveLink pathname={pathname} key="recent" href="/recent">Recent posts</SelectiveLink>,
+        <SelectiveLink pathname={pathname} key="friends" href="/friends">Friends</SelectiveLink>,
     ];
 
     const desktopVersion = <div className="hidden sm:block sticky top-0 max-w-4xl mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white z-10">
@@ -39,6 +52,10 @@ export default function NavBar() {
     </div>;
 
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState<boolean>(false);
+    React.useEffect(() => {
+        // close mobile menu when page changes
+        setMobileMenuOpen(false);
+    }, [pathname]);
     const closedSvg = <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
     </svg>;
@@ -46,7 +63,7 @@ export default function NavBar() {
         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
     </svg>;
     const mobileMenu = <div className="relative">
-        <div className="absolute right-0 flex flex-col items-end w-full border rounded p-4 bg-slate-50/90 backdrop-blur-sm space-y-2 text-lg">
+        <div className="absolute right-0 flex flex-col items-end w-full border rounded p-4 bg-slate-50/90 backdrop-blur-sm space-y-2 text-lg z-10">
             {userAuth ? userLinks : null}
             {userAuth ? logoutButton : loginLink}
         </div>
