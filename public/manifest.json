@@ -5,7 +5,7 @@
     "scope": "/",
     "start_url": "/",
     "name": "HRT Map",
-    "short_name": "hrt-map",
+    "short_name": "HRT Map",
     "description": "Social app for tracking information about HRT (hormone replacement therapy) doses",
     "icons": [
         {
