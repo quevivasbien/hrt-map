@@ -5,7 +5,7 @@ import SelectRating from "@/components/SelectRating";
 import { UserContext } from "@/components/UserContext";
 import MapSelect from "@/components/MapSelect";
 import { DoseInfo, LatLng } from "@/types";
-import { addDoseEvent } from "@/firebase/firestore";
+import { addDoseEvent } from "@/firebase/doseEvents";
 
 
 // this is a planned parenthood in kansas city, mo
