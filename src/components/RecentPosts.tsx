@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import { getRecentEvents } from "@/firebase/firestore";
+import { getRecentEvents } from "@/firebase/doseEvents";
 import DoseEvent from "@/components/DoseEvent";
 import { DoseInfo } from "@/types";
 import { QueryDocumentSnapshot } from "firebase/firestore";

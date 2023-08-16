@@ -3,8 +3,14 @@ export interface LatLng {
     lng: number;
 }
 
+export interface Reaction {
+    user: string;
+    text: string;
+}
+
 export interface DoseInfo {
-    user?: string;
+    id?: string;
+    user: string;
     time: Date;
     pos: LatLng,
     comment: string;

@@ -1,17 +1,17 @@
 import firebaseApp from "./config";
 
-import { getFirestore, doc, getDoc, getDocs, addDoc, setDoc, collection, query, where, orderBy, limit, startAfter, GeoPoint, Timestamp, updateDoc } from 'firebase/firestore';
-import type { DocumentData, Query, QueryDocumentSnapshot } from 'firebase/firestore';
-import { DoseInfo, EMPTY_FRIEND_INFO, EMPTY_FRIEND_REQUEST_INFO, FriendInfo, FriendRequestInfo, UserInfo } from "@/types";
+import { getFirestore, doc, getDoc, getDocs, addDoc, setDoc, collection, query, where, limit, updateDoc } from 'firebase/firestore';
+import type { DocumentData } from 'firebase/firestore';
+import { EMPTY_FRIEND_INFO, EMPTY_FRIEND_REQUEST_INFO, FriendInfo, FriendRequestInfo, UserInfo } from "@/types";
 
-const EVENT_COLLECTION = 'events';
 const FRIEND_COLLECTION = 'friends';
 const FRIEND_REQUEST_COLLECTION = 'friendRequests';
 const USER_COLLECTION = 'users';
 
 const db = getFirestore(firebaseApp);
 
-async function addItem(collName: string, item: any, id?: string) {
+
+export async function addItem(collName: string, item: any, id?: string) {
     try {
         if (id) {
             await setDoc(doc(db, collName, id), item, { merge: true });
@@ -25,9 +25,9 @@ async function addItem(collName: string, item: any, id?: string) {
     return { error: null };
 }
 
-async function getItem(collName: string, id: string) {
+export async function getItem(collName: string, id: string) {
     const ref = doc(db, collName, id);
-    console.log(`Getting item ${id} from collection ${collName}`);
+    // console.log(`Getting item ${id} from collection ${collName}`);
     try {
         const doc = await getDoc(ref);
         return { result: doc.data(), error: null };
@@ -36,7 +36,7 @@ async function getItem(collName: string, id: string) {
     }
 }
 
-async function getItems(collName: string, ids: string[]) {
+export async function getItems(collName: string, ids: string[]) {
     try {
         const coll = collection(db, collName);
         const q = query(coll, where("__name__", "in", ids));
@@ -48,62 +48,6 @@ async function getItems(collName: string, ids: string[]) {
     } catch (error) {
         return { result: null, error };
     }
-}
-
-// format in which dose info is stored in db
-// contains same information as DoseInfo, but using Firebase's types 
-interface FirebaseDoseInfo {
-    user: string;
-    time: Timestamp;
-    loc: GeoPoint;
-    comment: string;
-    rating: number;
-}
-
-export async function addDoseEvent(dose: DoseInfo) {
-    // convert to expected format
-    const { user, time, pos, comment, rating } = dose;
-    if (user === undefined) {
-        console.log("'user' field of DoseInfo must not be undefined when making query")
-        return;
-    }
-    const data = {
-        user,
-        time: Timestamp.fromDate(time),
-        loc: new GeoPoint(pos.lat, pos.lng),
-        comment,
-        rating,
-    };
-    return addItem(EVENT_COLLECTION, data);
-}
-
-// converts document snapshot into DoseInfo
-function parseEventDoc(doc: QueryDocumentSnapshot): DoseInfo {
-    const { user, time, loc, comment, rating } = doc.data() as FirebaseDoseInfo;
-    return {
-        user,
-        time: time.toDate() as Date,
-        pos: { lat: loc.latitude, lng: loc.longitude },
-        comment,
-        rating,
-    };
-}
-
-export async function getRecentEvents(uid: string, numEvents: number, previousSnapshot?: QueryDocumentSnapshot) {
-    const coll = collection(db, EVENT_COLLECTION);
-    let q: Query;
-    if (previousSnapshot) {
-        q = query(coll, where("user", "==", uid), orderBy("time", "desc"), startAfter(previousSnapshot), limit(numEvents))
-    } else {
-        q = query(coll, where("user", '==', uid), orderBy("time", "desc"), limit(numEvents));
-    }
-    const docs = await getDocs(q);
-    const events: DoseInfo[] = [];
-    docs.forEach((d) => {
-        events.push(parseEventDoc(d));
-    });
-    const lastSnapshot = docs.docs[docs.docs.length - 1];
-    return { events, lastSnapshot };
 }
 
 async function initFriendInfo(uid: string) {
@@ -184,7 +128,7 @@ export async function sendFriendRequest(uid: string, other: string) {
             requestsSent = [];
         } else {
             requestsSent = (userDoc.data() as FriendInfo).requestsSent;
-            console.log("Requests sent", requestsSent);
+            // console.log("Requests sent", requestsSent);
         }
         let requesters: string[];
         if (!otherDoc.exists()) {

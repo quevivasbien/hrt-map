@@ -38,7 +38,7 @@ export default function NavBar() {
         <SelectiveLink pathname={pathname} key="friends" href="/friends">Friends</SelectiveLink>,
     ];
 
-    const desktopVersion = <div className="hidden sm:block sticky top-0 max-w-4xl mx-auto px-8 py-4 drop-shadow-md rounded-b-lg bg-white z-10">
+    const desktopVersion = <div className="hidden sm:block sticky top-0 max-w-4xl mx-auto px-8 py-4 drop-shadow-md bg-white z-10">
         <div className="flex flex-row space-x-4">
             <Link href="/" className="text-xl font-bold font-serif">HRT Map</Link>
             {userAuth ? userLinks : null}
